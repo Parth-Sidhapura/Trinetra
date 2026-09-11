@@ -1,0 +1,53 @@
+# ---------------------------------------------------------------- secrets
+# Never commit these. .env.example files are the templates that DO get committed.
+.env
+.env.*
+!.env.example
+!.env.local.example
+*.key
+*.pem
+credentials*.txt
+Neo4j-*.txt
+
+# throwaway scripts written during setup — these hold real passwords
+set_neo4j.py
+set_pw.py
+use_neo4j_creds.py
+
+# ----------------------------------------------------------------- python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ------------------------------------------------------------------- node
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+.eslintcache
+
+# --------------------------------------------------------------- evidence
+# Ingested case files and exported manifests are data, not source.
+uploads/
+backups/
+manifests/
+*.sqlite
+*.db
+
+# -------------------------------------------------------------------- misc
+.DS_Store
+Thumbs.db
+*.log
+.vercel
+.idea/
+.vscode/
+*.zip

@@ -1,0 +1,99 @@
+name: Continuous Security Validation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sast:
+    name: SAST (Semgrep + Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/python
+            p/javascript
+        continue-on-error: true
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Bandit (Python SAST)
+        run: |
+          pip install bandit
+          bandit -r backend/app -f txt -ll || true
+
+  deps:
+    name: Dependency audit (pip-audit + npm audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: pip-audit
+        run: |
+          pip install pip-audit
+          pip-audit -r backend/requirements.txt || true
+
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+
+      - name: npm audit
+        working-directory: frontend
+        run: npm audit --audit-level=high || true
+
+  container:
+    name: Container scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t trinetra-backend:ci ./backend
+
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: trinetra-backend:ci
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: "0"
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  dast:
+    name: DAST (OWASP ZAP baseline)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - name: ZAP baseline against deployed demo
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: ${{ vars.DEPLOYED_URL || 'https://example.invalid' }}
+          cmd_options: "-a -I"
+        continue-on-error: true
+
+# NOTE: Kali Linux sits OUTSIDE this pipeline and outside the application
+# entirely — an isolated validation lab used to run Nmap, ZAP, Burp and
+# Wireshark against the team's own deployed demo. Kali does not protect
+# TRINETRA; Kali is used to test whether TRINETRA's defences work.

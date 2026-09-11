@@ -1,0 +1,61 @@
+import type { Config } from "tailwindcss";
+
+export default {
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        ink:      "#0B1017",
+        ink2:     "#090E15",
+        slab:     "#121B25",
+        slab2:    "#18232F",
+        slab3:    "#1E2C3A",
+        rule:     "#22303F",
+        rule2:    "#2E4055",
+        txt:      "#DDE5EE",
+        mute:     "#7A8CA0",
+        faint:    "#55697F",
+        brass:    "#C8963E",
+        brasslit: "#E8B65E",
+        verd:     "#3FBFA8",
+        alarm:    "#E5484D",
+        alarmlit: "#FF8086",
+        violet:   "#9C8CF0",
+        rose:     "#E86A9B",
+        steel:    "#6FA8DC",
+        ember:    "#E5844D",
+        paper:    "#F4EFE3",
+        paperink: "#2B2721",
+        paperrule:"#D6CDBB",
+      },
+      fontFamily: {
+        sans: ["Archivo", "system-ui", "sans-serif"],
+        mono: ["'IBM Plex Mono'", "ui-monospace", "monospace"],
+      },
+      boxShadow: {
+        slab:  "inset 0 1px 0 rgba(255,255,255,.05)",
+        float: "0 18px 40px -18px #000, inset 0 1px 0 rgba(255,255,255,.06)",
+        lift:  "0 22px 48px -22px #000",
+        paper: "0 14px 34px -16px #000",
+        brass: "0 0 0 1px rgba(200,150,62,.35), 0 0 30px -8px rgba(200,150,62,.4)",
+      },
+      keyframes: {
+        rise:   { from: { opacity: "0", transform: "translateY(7px)" },
+                  to:   { opacity: "1", transform: "none" } },
+        pulse2: { "0%,100%": { opacity: "1" }, "50%": { opacity: ".28" } },
+        sweep:  { "0%": { transform: "translateX(-110%)" },
+                  "100%": { transform: "translateX(430%)" } },
+        stamp:  { "0%":  { opacity: "0", transform: "scale(1.35) rotate(-6deg)" },
+                  "60%": { opacity: "1", transform: "scale(.96) rotate(1deg)" },
+                  "100%":{ opacity: "1", transform: "scale(1) rotate(0)" } },
+      },
+      animation: {
+        rise:   "rise .34s cubic-bezier(.2,.7,.3,1) both",
+        pulse2: "pulse2 2.4s ease-in-out infinite",
+        sweep:  "sweep 2.2s linear infinite",
+        stamp:  "stamp .5s cubic-bezier(.2,.8,.3,1) both",
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;

@@ -1,0 +1,8 @@
+# Install these ONLY if your host has the RAM/disk headroom.
+# Local dev + air-gapped: yes. Render free tier: probably not.
+# The app degrades gracefully when these are missing.
+
+faster-whisper==1.1.1     # offline audio transcription
+hdbscan==0.8.40           # spatio-temporal clustering
+scikit-learn==1.6.0       # hdbscan dependency
+weasyprint==63.1          # PDF brief + BSA Sec 63 certificate

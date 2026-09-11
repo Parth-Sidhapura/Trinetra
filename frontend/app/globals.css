@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+html, body { background: #0B1017; }
+
+body {
+  @apply text-txt font-sans antialiased;
+  font-size: 14px;
+}
+
+::selection { background: rgba(200,150,62,.32); }
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: #0E151E; }
+::-webkit-scrollbar-thumb { background: #2E4055; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #3D5573; }
+
+@layer components {
+
+  /* ---------------------------------------------------------- typography */
+  /* Archivo is a variable font — the width axis is what gives headings
+     their stamped, signage-like character. */
+  .disp {
+    font-variation-settings: 'wdth' 112, 'wght' 700;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .disp-wide { font-variation-settings: 'wdth' 125, 'wght' 700; }
+  .semi      { font-variation-settings: 'wdth' 100, 'wght' 600; }
+
+  .lbl  { @apply font-mono text-[10px] uppercase tracking-[.16em] text-faint; }
+  .mono { @apply font-mono text-[12px]; }
+  .num  { font-variant-numeric: tabular-nums; }
+
+  /* -------------------------------------------------------------- surfaces */
+  .slab  { @apply bg-slab border border-rule rounded-md shadow-slab; }
+  .slab2 { @apply bg-slab2 border border-rule rounded-md; }
+
+  /* glass panel that floats over the graph canvas */
+  .float {
+    @apply rounded-lg border border-rule2 shadow-float;
+    background: rgba(16,24,33,.78);
+    backdrop-filter: blur(14px);
+  }
+
+  /* the evidence surface — deliberately paper, inside all this chrome */
+  .paper {
+    @apply relative rounded bg-paper text-paperink shadow-paper
+           text-[12.5px] leading-[1.62] px-[18px] py-4;
+  }
+  .paper::after {
+    content: "";
+    @apply absolute inset-[6px] rounded-sm pointer-events-none;
+    border: 1px solid #D6CDBB;
+  }
+  .paper-h {
+    @apply font-mono text-[9.5px] uppercase tracking-[.14em] flex justify-between
+           pb-1.5 mb-2.5;
+    color: #8A7F6B;
+    border-bottom: 1px solid #D6CDBB;
+  }
+  .paper mark {
+    background: rgba(200,150,62,.34);
+    color: inherit;
+    box-shadow: 0 0 0 1px rgba(200,150,62,.42);
+    @apply rounded-sm px-[2px];
+  }
+
+  /* --------------------------------------------------------------- controls */
+  .btn {
+    @apply px-3 py-1.5 rounded border border-rule2 text-[13px] text-txt
+           transition-all duration-150 bg-white/[.03]
+           hover:bg-white/[.07] hover:border-faint
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-brass/70;
+  }
+  .btn-pri {
+    @apply px-3 py-1.5 rounded text-[13px] semi text-[#1A1206]
+           border border-brass/50 transition-all duration-150
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-brass/70;
+    background: linear-gradient(180deg, #E8B65E, #C8963E);
+  }
+  .btn-pri:hover { filter: brightness(1.09); }
+  .btn-pri:disabled { opacity: .4; filter: none; }
+
+  .input {
+    @apply w-full rounded border border-rule bg-ink2 px-3 py-2 text-sm
+           placeholder:text-faint transition
+           focus:outline-none focus:border-brass/60 focus:ring-1 focus:ring-brass/25;
+  }
+
+  /* ------------------------------------------------------------------ chip */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-[3px] border border-rule2
+           px-2 py-[2px] font-mono text-[10.5px] tracking-[.04em]
+           text-mute whitespace-nowrap;
+  }
+
+  /* --------------------------------------------------------------- motion */
+  .scanline { @apply relative overflow-hidden; }
+  .scanline::after {
+    content: "";
+    @apply absolute top-0 bottom-0 left-0 w-1/4;
+    background: linear-gradient(90deg, transparent, rgba(200,150,62,.2), transparent);
+    animation: sweep 2.2s linear infinite;
+  }
+}
+
+/* the technical grid — only behind the graph canvas, not the whole app */
+.gridfield {
+  background-image:
+    linear-gradient(rgba(120,160,200,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,160,200,.045) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,21 @@
+# Render blueprint. NOTE: free tier has no Background Workers, so the Celery
+# worker runs as a second free WEB service binding a dummy port.
+services:
+  - type: web
+    name: trinetra-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+
+  - type: web
+    name: trinetra-worker
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm
+    startCommand: >
+      sh -c "celery -A app.workers.celery_app worker --beat --loglevel=info --concurrency=1 &
+      python -m http.server $PORT"
